@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+    <title> 블루아카이브| HTML 기초(feat.스파르타코딩클럽)</title>
+
+    <meta property="og:title" content="블루아카이브 사이트" />
+    <meta property="og:description" content="내가만든 블루아카이브 유용한 사이트 모음" />
+    <meta property="og:image" content="https://mumu-global.fp.ps.easebar.com/file/6194689b9e15b755fda368faFmuO4WGx02" />
+
+    <style>
+        .layout {
+            background-color: #ffffffa6;
+            color: black;
+            text-align: center;
+        }
+
+        .video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            overflow: hidden;
+            margin: 0 auto;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .reference {
+            background-color: #ffffff77;
+            color: black;
+        }
+
+        .mybox {
+            width: 95%;
+            max-width: 700px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px lightblue;
+            margin: 20px auto;
+        }
+
+        .mybucket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mybucket>input {
+            width: 70%;
+        }
+
+        .mybox>li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .mybox>li>.complete-btn {
+            margin-left: 10px;
+        }
+
+        .mybox>li>h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+
+        .mybox>li>h2.done {
+            text-decoration: line-through;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_bucket();
+        });
+        function show_bucket() {
+            fetch('/bucket').then(res => res.json()).then(data => {
+                let rows = data['result']
+                $('#bucket-list').empty()
+                rows.forEach((a) => {
+                    let bucket = a['bucket']
+                    let done = a['done']  
+                    let completeBtn = done ? '' : `<button onclick="complete_bucket(${a['num']})" class="btn btn-success complete-btn">확인 완료</button>`
+                    let bucketText = done ? `<h2 class="done"> ${bucket} 확인 완료!!</h2>` : `<h2> ${bucket}</h2>`
+                    let temp_html = `<li>
+                                        ${bucketText}
+                                        ${completeBtn}
+                                    </li>`
+                    $('#bucket-list').append(temp_html)
+                })
+            })
+        }
+
+        function save_bucket() {
+            let bucket = $('#bucket').val()
+
+            let formData = new FormData();
+            formData.append("bucket_give", bucket);
+
+            fetch('/bucket', { method: "POST", body: formData, }).then((response) => response.json()).then((data) => {
+                alert(data["msg"]);
+                window.location.reload();
+            });
+        }
+
+        function complete_bucket(num) {
+            let formData = new FormData();
+            formData.append("bucket_num", num);
+
+            fetch('/bucket/complete', { method: "POST", body: formData })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert(data["msg"]);
+                    show_bucket();
+                });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="layout">
+        <video class="video" src="https://ba.vod.nexoncdn.co.kr/bg/loop_l_kr.mp4" muted="muted" loop="loop"
+            playsinline="" autoplay="autoplay"></video>
+        <h1><span style="color:rgb(0, 174, 255)"><img
+                    src="https://nxm-clw-cdn.dn.nexoncdn.co.kr/bluearchive/img/brand/gnb_logo_b.png" /><br>블루아카이브!</span>
+        </h1>
+        <h2>나만의 블루아카이브 정보사이트</h2>
+        <hr>
+        <div>
+            <span style="color:rgb(0, 174, 255)">공식사이트<br>
+                <a href="https://bluearchive.nexon.com/home"> 블루아카이브</a>
+                <a href="https://forum.nexon.com/bluearchive/main">블루아카이브 커뮤니티</a>
+                <a href="https://twitter.com/KR_BlueArchive"> 블루아카이브 공식트위터</a>
+                <a href="https://www.youtube.com/channel/UCj0iColXMAjPA92rH-AXVGQ"> 블루아카이브 공식유튜브</a>
+                <br>
+                유용한사이트
+                <br>
+                <a href="https://arona.ai/"> AronaAI</a>
+                <a href="https://schale.gg/"> 샬레DB</a>
+                <a href="https://juto.tistory.com/category/%EB%B8%94%EB%A3%A8%EC%95%84%EC%B9%B4%EC%9D%B4%EB%B8%8C">
+                    블루아카이브 임무공략<br></a>
+        </div>
+        <img
+            src="https://dszw1qtcnsa5e.cloudfront.net/community/20211108/25eac5f0-cdd1-4a62-a8ae-35d3a0ee033d/009.gif" />
+        <hr>
+        <div>
+            <h1>방명록</h1>
+        </div>
+        <div class="mybox">
+            <div class="mybucket">
+                <input id="bucket" class="form-control" type="text" placeholder="남기고 싶은 말을 입력하세요" />
+                <button onclick="save_bucket()" type="button" class="btn btn-outline-primary">기록하기</button>
+            </div>
+        </div>
+        <div class="mybox" id="bucket-list">
+            <li>
+                <h2> 사이트 링크가 유용해요!</h2>
+                <button class="btn btn-primary">확인 완료</button>
+            </li>
+        </div>
+    </div>
+
+    <div class="reference">
+        <p>참고자료</p>
+        <ul>
+            <li> <a href="https://woodstar.tistory.com/58">배경작업</a> </li>
+            <li> <a href="https://hi098123.tistory.com/222">투명도작업</a> </li>
+            <li> <a href="https://bluearchive.nexon.com/home"> 소스출처 </a>(개발자도구로 크롤링 해왔습니다!)</li>
+        </ul>
+    </div>
+</body>
+
+</html>
